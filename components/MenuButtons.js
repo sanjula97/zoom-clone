@@ -8,31 +8,37 @@ const items = [
         id: 1,
         name: "video-camera",
         title: "New Meeting",
+        customColor: "#FF751F",
     },
     {
         id: 2,
         name: "plus-square",
         title: "Join",
+        customColor: "blue",
     },
     {
         id: 3,
         name: "calendar",
         title: "Schedule",
+        customColor: "blue",
     },
     {
         id: 4,
         name: "upload",
         title: "Share Screen",
+        customColor: "blue",
     },
 ]
 
 function MenuButtons() {
     return (
         <View style={styles.container}>
-            {/* Button one */}
-            {items.map(item => 
-               <View style={styles.buttonContainer}>
-                    <TouchableOpacity style={styles.button}>
+            {items.map((item, index) => 
+               <View style={styles.buttonContainer} key={index}>
+                    <TouchableOpacity style={{
+                        ...styles.button,
+                        backgroundColor: item.customColor ? item.customColor : "#0470OC",
+                    }}>
                         <FontAwesome name={item.name} size={23} color="#efefef"/>
                     </TouchableOpacity>
                     <Text style={styles.menuText}>{item.title}</Text>
