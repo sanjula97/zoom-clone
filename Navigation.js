@@ -18,7 +18,8 @@ function Navigation() {
                     options={{ 
                         title: 'Start a meeting',
                         headerStyle: {
-                            backgroundColor: '#1c1c1c'
+                            backgroundColor: '#1c1c1c',
+                            shadowOpacity: 0,
                         },
                         headerTintColor: "white",
                         }} />
