@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import { View, StyleSheet, Text, Alert, SafeAreaView, TouchableOpacity } from 'react-native'
+import { View, StyleSheet, Text, Alert, SafeAreaView, TouchableOpacity, Modal } from 'react-native'
 import StartMeeting from '../components/StartMeeting'
 import { io } from "socket.io-client"
 import { Camera } from 'expo-camera'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
+import Chat from '../components/Chat'
 
 function MeetingRoom() {
 
@@ -11,10 +12,11 @@ function MeetingRoom() {
     const [roomId, setRoomId] = useState()
     const [activeUsers, setActiveUsers] = useState([])
     const [startCamera, setStartCamera] = useState(false)
+    const [modalVisible, setModalVisible] = useState(false)
 
-    // useEffect(() => {
-    //     return setActiveUsers([])
-    //   }, []); 
+    useEffect(() => {
+        return setActiveUsers([])
+      }, []); 
 
     const menuIcons = [
         {
@@ -43,7 +45,7 @@ function MeetingRoom() {
         },
     ]
 
-    const socket = io('http://bf62-112-135-82-115.ngrok.io')
+    const socket = io('http://3337-112-135-82-105.ngrok.io')
 
     socket.on("connect", () => {
         console.log(socket.connected); // true
@@ -72,14 +74,25 @@ function MeetingRoom() {
         <View style={styles.container}>
             {startCamera ? (
             <SafeAreaView style={{ flex: 1 }}>
+                <Modal
+                animationType='slide'
+                transparent={false}
+                presentationStyle='fullScreen'
+                visible={modalVisible}
+                onRequestClose={() => {
+                    setModalVisible(!modalVisible)
+                }}
+                >
+                    <Chat modalVisible={modalVisible} setModalVisible={setModalVisible} /> 
+                </Modal>
                 <View style={styles.activeUsersContainer}>
                     <View style={styles.cameraContainer}>
                         <Camera type='front' style={{ 
-                            width: activeUsers.length == 0 ?  "100%" : 200, 
-                            height:activeUsers.length == 0 ?  600 : 200 
+                            width: activeUsers.length <= 1 ?  "100%" : 200, 
+                            height:activeUsers.length <= 1 ?  600 : 200 
                             }}>
                         </Camera>
-                        {activeUsers.map((user, index) => (
+                        {activeUsers.filter( user => (user.userName != name)).map((user, index) => (
                             <View style={styles.activeUserContainer} key={index}>
                                 <Text style={{ color: "white" }}>{user?.userName}</Text>
                             </View>
@@ -92,6 +105,13 @@ function MeetingRoom() {
                                 <Text style={styles.textTile}>{icon.title}</Text>
                             </TouchableOpacity>
                         ))}
+                            <TouchableOpacity
+                                style={styles.tile}
+                                onPress={() => setModalVisible(true)}
+                            >
+                                <FontAwesome name="comment" size={24} color="#efefef" />
+                                <Text style={styles.textTile}>Chat</Text>
+                            </TouchableOpacity>
                     </View>
                 </View>    
             </SafeAreaView>
